@@ -1,0 +1,128 @@
+<div class="general-block-decorator">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div id="redirections" class="tab-pane active form-container">
+                {include
+                file = "includes/generic-create-dialog.html"
+                dialog_id    = "redirection_create_dialog"
+                dialog_title = {intl d='redir301.ai' l="Create new Redirect"}
+                dialog_body  = "
+                <label for=\"pattern\">{intl d='redir301.ai' l='Pattern'}</label>
+                <input type=\"text\" id=\"pattern\" class=\"form-control\" name=\"pattern\" value=\"\" required/>
+
+                <label for=\"target\">{intl d='redir301.ai' l='Target'}</label>
+                <input type=\"text\" id=\"target\" class=\"form-control\" name=\"target\" value=\"\" required/>
+
+                <label for=\"active\">{intl d='redir301.ai' l='Active'}</label>
+                <input type=\"checkbox\" id=\"active\" class=\"form-control\" name=\"active\" value=\"1\" required/>"
+
+                form_action="{url path="/admin/module/Redir301/addRedirection"}"
+                dialog_ok_label     = {intl d='redir301.ai' l="Create"}
+                dialog_cancel_label = {intl d='redir301.ai' l="Cancel"}
+                }
+
+            
+                <table class="table table-striped table-condensed table-left-aligned">
+                    <caption class="clearfix">
+                        <span class="title ">
+                            {intl d='redir301.ai' l='Manage redirects'}
+                        </span>
+                        {loop type="auth" name="can_create" role="ADMIN" module="redir301" access="CREATE"}
+                        <a class="btn btn-default btn-primary pull-right" title="{intl d='redir301.ai'  l='Create'}" href="#redirection_create_dialog" data-toggle="modal">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                        {/loop}
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th class="col-md-3">{intl d='redir301.ai' l="Pattern"}</th>
+                            <th class="col-md-3">{intl d='redir301.ai' l="Target"}</th>
+                            <th class="col-md-1">{intl d='redir301.ai' l="Active"}</th>
+                            <th class="col-md-1">{intl d='redir301.ai' l="Triggered"}</th>
+                            <th class="col-md-2">{intl d='redir301.ai' l="Last time triggered"}</th>
+                            <th class="col-md-1">{intl d='redir301.ai' l="Actions"}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {ifloop rel="redir301.list"}
+                        
+                        {loop type="redir301.list" name="redir301.list" action="list" start="0" limit="100"}
+                        {if $ACTIVE eq '1'} 
+                            {assign var='ch_active' value='checked="checked"'}
+                        {else}
+                            {assign var='ch_active' value=''}
+                        {/if}
+                        
+                        {include
+                        file = "includes/generic-confirm-dialog.html"
+                        dialog_id    = "redirection_edit_dialog_{$ID}"
+                        dialog_title = {intl d='redir301.ai' l="Update redirect"}
+                        dialog_message  = "
+                            <label for=\"pattern_{$ID}\" class=\"control-label\">{intl d='redir301.ai' l='Pattern'}</label>
+                            <input type=\"text\" id=\"pattern_{$ID}\" class=\"form-control\" name=\"pattern\" value=\"{$PATTERN}\" required/>
+
+                            <label for=\"target_{$ID}\" class=\"control-label\">{intl d='redir301.ai' l='Target'}</label>
+                            <input type=\"text\" id=\"target_{$ID}\" class=\"form-control\" name=\"target\" value=\"{$TARGET}\" required/>
+
+                            <label for=\"target_{$ID}\" class=\"control-label\">{intl d='redir301.ai' l='Active'}</label>
+
+                            <input type=\"checkbox\" id=\"active_{$ID}\" class=\"form-control\" name=\"active\" value=\"1\" {$ch_active} />
+                            <input type=\"hidden\" name=\"id\" value=\"{$ID}\" />
+                        "
+                        form_action="{url path="/admin/module/Redir301/updateRedirection"}"
+                        dialog_ok_label     = {intl d='redir301.ai' l="Update"}
+                        dialog_cancel_label = {intl d='redir301.ai' l="Cancel"}
+                    }
+
+                    {include
+                    file = "includes/generic-confirm-dialog.html"
+                    dialog_id    = "redirection_delete_dialog_{$ID}"
+                    dialog_title = {intl d='redir301.ai' l="Delete redirect"}
+                    dialog_message  = "<input type=\"hidden\" name=\"operation\" value=\"delete\"/>
+                    <input type=\"hidden\" name=\"id\" value=\"{$ID}\"/>
+                    {intl d='redir301.ai' l="Do you really want to delete the redirection ?"}"
+
+                    form_action="{url path="/admin/module/Redir301/deleteRedirection"}"
+                    dialog_ok_label     = {intl d='redir301.ai'  l="Delete"}
+                    dialog_cancel_label = {intl d='redir301.ai'  l="Cancel"}
+                    }
+                    <tr >
+                        <td>{$PATTERN}</td>
+                        <td>{$TARGET}</td>
+                        <td>
+                            <span class="form-submit-button btn btn-sm btn-default btn-{$CLASS_BTN_ACTIVE}">
+                                <span class="glyphicon glyphicon-{$CLASS_ICON_ACTIVE}"></span>
+                            </span></td>
+                        <td>{$TRIGGERED}</td>
+                        <td>{$LASTTIME}</td>
+                        <td>
+                            <div class="btn-group">
+                                {loop type="auth" name="can_change" role="ADMIN" module="redir301" access="UPDATE"}
+                                <a class="btn btn-default btn-xs" title="{intl d='redir301.ai' l='Update redirect'}" href="#redirection_edit_dialog_{$ID}" data-toggle="modal">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                                <a class="btn btn-default btn-xs" title="{intl d='redir301.ai' l='Delete redirect'}" href="#redirection_delete_dialog_{$ID}" data-toggle="modal">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                                {/loop}
+                            </div>
+                        </td>
+                    </tr>
+                    {/loop}
+                    {/ifloop}
+                    {elseloop rel="redir301.list"}
+                    <tr>
+                        <td colspan="5" class="message">
+                            <div class="alert alert-info">
+                                {intl d='redir301.ai' l="No redirect created, start one !"}
+                            </div>
+                        </td>
+                    </tr>
+                    {/elseloop}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

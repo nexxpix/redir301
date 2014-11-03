@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="thelia" namespace="Redir301\Model">
+    <table name="redir301_redirections">
+    	<column name="id" primaryKey="true" autoIncrement="true" required="true" type="INTEGER" />
+    	<column name="pattern" required="true" type="VARCHAR" />
+    	<column name="target" required="true" type="VARCHAR" />
+    	<column name="triggered" type="INTEGER" />
+    	<column name="triggered_first" type="TIMESTAMP" />
+    	<column name="triggered_last" type="TIMESTAMP" />
+    	<column name="active" required="true" type="TINYINT" />
+    	
+        <behavior name="timestampable">
+        	<parameter name="create_column" value="created_on" />
+    		<parameter name="update_column" value="updated_on" />
+        </behavior>
+    </table>
+    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+</database>

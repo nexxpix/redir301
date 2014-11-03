@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config xmlns="http://thelia.net/schema/dic/config"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
+    <loops>
+        <loop name="redir301.list" class="Redir301\Loop\Redirections" />
+    </loops>
+    <forms>
+        <form name="redir301.redirection.add" class="Redir301\Form\AddRedirection" />
+    </forms>
+    <services>
+        <service id="redir301.listener" class="Redir301\Listeners\Redir301Listeners" >
+            <tag name="kernel.event_subscriber"/>
+        </service>
+    </services>
+</config>
+ 
